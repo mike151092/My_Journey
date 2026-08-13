@@ -91,7 +91,48 @@ print(df[["State", "Export_Change_USD_Mn", "Export_Direction"]])
 
 
 print(df["Export_Direction"].value_counts())
-
+##################################################
+#                                                #
+##################################################
 total_state_increased_export =  (df["Export_Direction"].value_counts('Increase'))*100
 
 print(total_state_increased_export)
+
+increased_states = df[df['Export_Direction']=='Increase']
+
+increased_exports = increased_states['Exports_2025_26_USD_Mn'].sum()
+
+print(f"The export value for state that record increase in year 25 to 26 is:{increased_exports} Million Dollars")
+
+total_export = df['Exports_2025_26_USD_Mn'].sum()
+
+#print(Sum_FY_25_26_States_Exports )
+print(f'The total export for 2025 to 26 is: {total_export} Million Dollars')
+
+increased_export_share =(increased_exports/total_export)* 100
+
+print(f'The share contributed by the state with increase in export for 2025 to 2026 is:{increased_export_share} %')
+
+decreased_state = df[df['Export_Direction']=='Decrease']
+decreased_exports = decreased_state['Exports_2025_26_USD_Mn'].sum()
+print(f"The export value for state that record decrease in year 25 to 26 is:{decreased_exports} Million Dollars")
+
+decreased_export_share = (decreased_exports/total_export)*100
+print(f'The share contributed by the state with decrease in export for 2025 to 2026 is:{decreased_export_share} %')
+
+total_share = increased_export_share + decreased_export_share
+print(f'the value of share from both increased and decreased states is {total_share}%')
+
+##############################################
+#Visualization                               #
+##############################################
+top_10_states = df.sort_values('Exports_2025_26_USD_Mn',ascending=False).head(10)
+
+print(top_10_states[['State','Exports_2025_26_USD_Mn']])
+
+plt.figure(figsize=(10,6))
+sns.barplot(data=top_10_states, x='Exports_2025_26_USD_Mn', y ='State')
+plt.xlabel("Exports FY25-26 (USD Million)")
+plt.ylabel("State")
+plt.title("Top 10 Indian states by Export - FY25-26")
+plt.show()
