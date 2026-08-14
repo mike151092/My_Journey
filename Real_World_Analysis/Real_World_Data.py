@@ -126,13 +126,18 @@ print(f'the value of share from both increased and decreased states is {total_sh
 ##############################################
 #Visualization                               #
 ##############################################
-top_10_states = df.sort_values('Exports_2025_26_USD_Mn',ascending=False).head(10)
+top_10_states = df.sort_values('Exports_2025_26_USD_Bn',ascending=False).head(10)
 
-print(top_10_states[['State','Exports_2025_26_USD_Mn']])
+print(top_10_states[['State','Exports_2025_26_USD_Bn']])
 
-plt.figure(figsize=(10,6))
-sns.barplot(data=top_10_states, x='Exports_2025_26_USD_Mn', y ='State')
-plt.xlabel("Exports FY25-26 (USD Million)")
-plt.ylabel("State")
-plt.title("Top 10 Indian states by Export - FY25-26")
+
+plt.figure(figsize=(20,10))
+sns.barplot(data=top_10_states, x='Exports_2025_26_USD_Bn', y ='State')
+plt.xlabel("Exports FY25-26 (USD Billion)",fontweight='bold')
+plt.ylabel("State",fontweight='bold')
+plt.title("Top 10 Indian States by Export - FY25-26",fontweight="bold")
+#plt.xticks(fontweight="bold")
+#plt.yticks(fontweight="bold")
+for i, value in enumerate(top_10_states['Exports_2025_26_USD_Bn']):
+        plt.text(value,i,f"${value:.2f}B",ha='left',va='center',fontsize=10)
 plt.show()
