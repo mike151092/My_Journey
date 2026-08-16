@@ -105,5 +105,5 @@ print(df.groupby('Date').count().head())
 
 dayHour= df.groupby(by=['Day of Week', 'Hour']).count()['Reason'].unstack()
 
-sns.heatmap(dayHour,cmap='viridis')
-plt.show()
+#sns.heatmap(dayHour,cmap='viridis')
+#plt.show()
