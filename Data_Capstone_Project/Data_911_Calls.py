@@ -73,7 +73,37 @@ print(df['Day of Week'])
 #plt.show()
 
 #Create a count plot for the Month and colour it based on the Reason column
-sns.countplot(x='Month',data=df,hue='Reason')
-plt.legend(bbox_to_anchor=(1.05,1),loc=2,borderaxespad=0)
+#sns.countplot(x='Month',data=df,hue='Reason')
+#plt.legend(bbox_to_anchor=(1.05,1),loc=2,borderaxespad=0)
 
+#plt.show()
+
+byMonth = df.groupby('Month').count()
+print(byMonth.head())
+
+#byMonth['lat'].plot()
+#sns.countplot(x='Month',data=df,palette='viridis')
+#plt.legend(bbox_to_anchor=(1.05,1),loc=2,borderaxespad=0)
+
+#sns.lmplot(x='Month',y='twp',data=byMonth.reset_index())
+#plt.show()
+
+print(df['timeStamp'].iloc[0])
+
+df['Date'] = df['timeStamp'].apply(lambda t:t.date())
+
+print(df['Date'].head())
+
+print(df.groupby('Date').count().head())
+
+#df.groupby('Date').count()['lat'].plot()
+#df[df['Reason']=='Traffic'].groupby('Date').count()['lat'].plot()
+#df[df['Reason']=='Fire'].groupby('Date').count()['lat'].plot()
+#df[df['Reason']=='EMS'].groupby('Date').count()['lat'].plot()
+#plt.tight_layout()
+#plt.show()
+
+dayHour= df.groupby(by=['Day of Week', 'Hour']).count()['Reason'].unstack()
+
+sns.heatmap(dayHour,cmap='viridis')
 plt.show()
