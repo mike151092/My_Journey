@@ -208,7 +208,7 @@ print(india_export_map.shape)
 print(india_export_map["State"].nunique())
 print(india_export_map.geometry.isna().sum())
 
-fig, ax =plt.subplots(figsize=(14,10))
+'''fig, ax =plt.subplots(figsize=(14,10))
 
 india_export_map.plot(column="State_share_pct_25_26",ax=ax,legend=True,cmap="viridis",
                       linewidth=0.5,edgecolor='white')
@@ -228,4 +228,52 @@ for idx, row in india_export_map.iterrows():
 
 ax.set_title('India State Export Share FY25-26',fontsize=22,fontweight='bold',pad=20)
 ax.axis('off')
-plt.show()
+plt.show()'''
+
+india_export_map['Share_Change_pct_points'] = (india_export_map['State_share_pct_25_26']
+                                               -india_export_map['State_share_pct_24_25'])
+
+share_change = india_export_map[['State','State_share_pct_24_25',
+                                 'State_share_pct_25_26',
+                                 'Share_Change_pct_points']].sort_values('Share_Change_pct_points',ascending=False)
+
+print(share_change)
+print(share_change.head(5))
+print(share_change.tail(5))
+print(share_change.sort_values("Share_Change_pct_points",ascending=True).head(5))
+
+max_change = india_export_map['Share_Change_pct_points'].abs().max()
+print(max_change)
+
+
+
+fig, ax =plt.subplots(figsize=(14,10))
+
+'''india_export_map.plot(column="Share_Change_pct_points",ax=ax,legend=True,cmap="RdBu_r",
+                      linewidth=0.5,edgecolor='white',vmin = -max_change,
+                      vmax= max_change)
+
+for idx, row in india_export_map.iterrows():
+
+    point = row.geometry.representative_point()
+
+    ax.text(
+        point.x,
+        point.y,
+        f"{row['State']}\n{row['State_share_pct_25_26']:.2f}%",
+        fontsize=8,
+        ha="center",
+        va="center"
+    )
+
+ax.set_title('Change in State Export Share: FY24-25 to FY25-26"',fontsize=18,fontweight='bold',pad=20)
+ax.axis('off')
+plt.show()'''
+
+summary = india_export_map[['State',"Exports_2024_25_USD_Bn",
+                            "Exports_2025_26_USD_Bn",'State_share_pct_24_25',
+                            'State_share_pct_25_26','Share_Change_pct_points']].copy()
+
+summary['Export_Change_USD_Bn']= (summary['Exports_2025_26_USD_Bn']-summary['Exports_2024_25_USD_Bn'])
+
+print(summary.sort_values('Export_Change_USD_Bn',ascending=False))
