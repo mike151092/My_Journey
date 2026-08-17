@@ -208,28 +208,65 @@ print(india_export_map.shape)
 print(india_export_map["State"].nunique())
 print(india_export_map.geometry.isna().sum())
 
-'''fig, ax =plt.subplots(figsize=(14,10))
+#############################################
+# USED for Plots                            #
+#############################################
 
-india_export_map.plot(column="State_share_pct_25_26",ax=ax,legend=True,cmap="viridis",
+label_offsets = {"West Bengal": (0.2, -1.2),"Assam": (2.0, 0.3),"Madhya Pradesh": (-0.5, -0.5),
+                 'Andhra Pradesh': (0.0,-0.8),'Gujarat':(0.0,0.25),'Kerala':(0.0,-0.75),
+                 "Dadra & Nagar Haveli and Daman & Diu": (1.8, -0.5)}
+
+small_states = ["Andaman And Nicobar Islands","Chandigarh","Sikkim",
+                "Tripura","Nagaland","Mizoram","Manipur","Meghalaya","Puducherry",
+                'Delhi', 'Goa']
+def add_callout(state, x_offset, y_offset):
+
+    row = india_export_map[india_export_map["State"] == state].iloc[0]
+    point = row.geometry.representative_point()
+
+    ax.annotate(f"{state}\n"f"{row['State_share_pct_25_26']:.2f}%",xy=(point.x, point.y),
+        xytext=(x_offset, y_offset),textcoords="offset points",fontsize=6.5,ha="center",va="center",
+        arrowprops=dict(arrowstyle="-",linewidth=0.8))
+
+#############################################
+#Plot 1                                     #
+#############################################
+'''
+fig, ax =plt.subplots(figsize=(14,10))
+
+india_export_map.plot(column="State_share_pct_25_26",ax=ax,legend=True,cmap="managua",
                       linewidth=0.5,edgecolor='white')
+
+
+
 
 for idx, row in india_export_map.iterrows():
 
-    point = row.geometry.representative_point()
+    if row['State'] not in small_states:
+        point = row.geometry.representative_point()
+        dx, dy = label_offsets.get(row["State"],(0, 0))
+        ax.text(point.x + dx,point.y + dy,f"{row['State']}\n{row['State_share_pct_25_26']:.2f}%",
+                fontsize=6.5,ha="center",va="center")
 
-    ax.text(
-        point.x,
-        point.y,
-        f"{row['State']}\n{row['State_share_pct_25_26']:.2f}%",
-        fontsize=8,
-        ha="center",
-        va="center"
-    )
+
+
+add_callout("Sikkim", 10, 22)
+add_callout("Tripura", 0, -30)
+add_callout("Nagaland", 35, 5)
+add_callout("Manipur", 35, -15)
+add_callout("Mizoram", 35, -15)
+add_callout("Meghalaya", -10, -20)
+add_callout('Goa',-15,0)
+add_callout('Delhi',20,0)
+add_callout('Chandigarh',80,20)
+add_callout('Puducherry',20,5)
 
 ax.set_title('India State Export Share FY25-26',fontsize=22,fontweight='bold',pad=20)
 ax.axis('off')
 plt.show()'''
-
+#############################################
+# END of Plot 1                             #           
+#############################################
 india_export_map['Share_Change_pct_points'] = (india_export_map['State_share_pct_25_26']
                                                -india_export_map['State_share_pct_24_25'])
 
@@ -245,31 +282,47 @@ print(share_change.sort_values("Share_Change_pct_points",ascending=True).head(5)
 max_change = india_export_map['Share_Change_pct_points'].abs().max()
 print(max_change)
 
-
-
+#############################################
+#PLOT2                                      #
+#############################################
+'''
 fig, ax =plt.subplots(figsize=(14,10))
 
-'''india_export_map.plot(column="Share_Change_pct_points",ax=ax,legend=True,cmap="RdBu_r",
-                      linewidth=0.5,edgecolor='white',vmin = -max_change,
-                      vmax= max_change)
+india_export_map.plot(column="Share_Change_pct_points",ax=ax,legend=True,cmap="coolwarm",
+                      linewidth=0.5,edgecolor='white',vmin = -max_change,vmax= max_change)
+
+
+def format_change(x):
+    if abs(x) < 0.005:
+        return "0.00"
+    elif x > 0:
+        return f"+{x:.2f}"
+    else:
+        return f"{x:.2f}"
 
 for idx, row in india_export_map.iterrows():
+    if row['State'] not in small_states:
+        point = row.geometry.representative_point()
+        dx, dy = label_offsets.get(row["State"],(0, 0))
+        ax.text(point.x + dx,point.y + dy,f"{row['State']}\n{format_change(row['Share_Change_pct_points'])}%",
+        fontsize=8,ha="center",va="center")
+add_callout("Sikkim", 10, 22)
+add_callout("Tripura", 0, -30)
+add_callout("Nagaland", 35, 5)
+add_callout("Manipur", 35, -15)
+add_callout("Mizoram", 35, -15)
+add_callout("Meghalaya", -10, -20)
+add_callout('Goa',-15,0)
+add_callout('Delhi',20,0)
+add_callout('Chandigarh',80,20)
+add_callout('Puducherry',20,5)
 
-    point = row.geometry.representative_point()
-
-    ax.text(
-        point.x,
-        point.y,
-        f"{row['State']}\n{row['State_share_pct_25_26']:.2f}%",
-        fontsize=8,
-        ha="center",
-        va="center"
-    )
-
-ax.set_title('Change in State Export Share: FY24-25 to FY25-26"',fontsize=18,fontweight='bold',pad=20)
+ax.set_title('Change in State Export Share:  FY24-25 to FY25-26',fontsize=18,fontweight='bold',pad=20)
 ax.axis('off')
 plt.show()'''
-
+#############################################
+#END of PLOT2                               #
+#############################################
 summary = india_export_map[['State',"Exports_2024_25_USD_Bn",
                             "Exports_2025_26_USD_Bn",'State_share_pct_24_25',
                             'State_share_pct_25_26','Share_Change_pct_points']].copy()
