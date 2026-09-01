@@ -54,6 +54,25 @@ print(returns.loc['2015-01-01': '2015-12-31'].std())
 #sns.displot(returns.loc['2015-01-01': '2015-12-31']['MS'],color='green',bins=50,kde=True)
 #sns.displot(returns.loc['2008-01-01':'2008-12-31']['C'],color='red',bins=50,kde=True)
 
+##Line plot##
+#bank_stocks['Close'].plot(figsize=(12,4))
+#plt.legend()
+
+##Average plot##
+
+data = BAC['Close']['2008-01-01':'2009-01-01']
+#fig,ax = plt.subplots(figsize=(12,4))
+#data.plot(ax=ax, label='Close')
+#data.rolling(window=30).mean().plot(ax=ax, label='30 day average')
+#ax.get_legend_handles_labels()
+#plt.show()
+
+##HEAT MAP ##
+#sns.heatmap(bank_stocks.xs(key='Close',axis=1).corr(),annot=True)
+#plt.show()
 
 
+
+## Cluster MAP ##
+sns.clustermap(bank_stocks.xs(key='Close',axis=1).corr(),annot=True)
 plt.show()
